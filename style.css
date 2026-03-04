@@ -77,3 +77,22 @@ h3 { font-size: 4vw; }
     text-align: center;
 }
 
+/* Contenedor de la barra */
+#energy-bar {
+    width: 100%; /* ocupará TODO el ancho de #sun-box */
+    max-width: 100%; /* no exceder el cajón */
+    height: 8px;   /* altura de la barra */
+    background-color: rgba(0, 191, 255, 0.1); /* fondo ligero azul */
+    border-radius: 4px;
+    margin: 5px 0;
+    overflow: hidden;
+}
+
+/* Relleno dinámico de energía */
+#energy-fill {
+    width: 0%; /* se actualizará en JS */
+    height: 100%;
+    background-color: #00BFFF; /* azul neón */
+    transition: width 0.5s ease-in-out;
+}
+
