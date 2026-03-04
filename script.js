@@ -110,6 +110,8 @@ function update(){
     let hour = now.getHours() + now.getMinutes()/60;
     let energy = Math.max(0, Math.min(1, (hour-6)/12)); // 6am->6pm
     document.getElementById("energy").style.width = (energy*100)+"%";
+    let energyPercent = energy * 100; // energy debe estar entre 0 y 1
+    document.getElementById("energy-fill").style.width = `${energyPercent}%`;
 }
 
 setInterval(update,1000);
