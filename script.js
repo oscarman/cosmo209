@@ -57,6 +57,19 @@ function update(){
     let age = moonAge(now);
     let phase = moonPhaseName(age);
     let season = getSeason(now);
+    / Cálculo solar
+    let sunTimes = SunCalc.getTimes(now, latitude, longitude);
+    let dawn = sunTimes.dawn;
+    let sunrise = sunTimes.sunrise;
+    let solarNoon = sunTimes.solarNoon;
+    let sunset = sunTimes.sunset;
+    let dusk = sunTimes.dusk;
+
+
+    // Mostrar en pantalla
+    document.getElementById("sun").innerText = 
+      `ALBA: ${dawn.toLocaleTimeString()} | AMANECER: ${sunrise.toLocaleTimeString()} | MEDIO DIA: ${solarNoon.toLocaleTimeString()} | ATARDECER: ${sunset.toLocaleTimeString()} | ANOCHECER: ${dusk.toLocaleTimeString()}`;
+    
 
     document.getElementById("time").innerText = now.toTimeString().split(" ")[0];
     document.getElementById("date").innerText = `DIA ${day} | MES ${month} | ANNO ${year}`;
