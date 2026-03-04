@@ -93,10 +93,11 @@ function update(){
     document.getElementById("sun").innerText = 
       `ALBA: ${dawn} | AMANECER: ${sunrise} | MEDIO DIA: ${solarNoon} | ATARDECER: ${sunset} | ANOCHECER: ${dusk}`;
 
-    document.getElementById("time").innerText = now.toTimeString().split(" ")[0];
-    document.getElementById("date").innerText = `DIA ${day} | MES ${month} | ANNO ${year}`;
-    document.getElementById("moon").innerText = `FASE: ${phase} | EDAD: ${age.toFixed(2)} días`;
-    document.getElementById("season").innerText = `ESTACION: ${season}`;
+    document.getElementById("dawn-text").innerText = `ALBA: ${dawn}`;
+    document.getElementById("sunrise-text").innerText = `AMANECER: ${sunrise}`;
+    document.getElementById("noon-text").innerText = `MEDIO DIA: ${solarNoon}`;
+    document.getElementById("sunset-text").innerText = `ATARDECER: ${sunset}`;
+    document.getElementById("dusk-text").innerText = `ANOCHECER: ${dusk}`;
     
     // Clima
     getWeather().then(w=>{
