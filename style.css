@@ -1,18 +1,42 @@
 body {
-    background:#0b0b0b;
-    color:#00BFFF;
-    font-family:sans-serif;
-    text-align:center;
+    background: #0b0b0b;
+    color: #00BFFF;
+    font-family: sans-serif;
+    margin: 0;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
 }
-h1,h2,h3 { margin:5px; }
+
+#container {
+    transform: rotate(-90deg);
+    transform-origin: center center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vh; /* usamos altura del body como ancho del contenedor */
+    height: 100vw; /* usamos ancho del body como altura del contenedor */
+}
+
+h1, h2, h3 {
+    margin: 5px;
+    text-align: center;
+    word-wrap: break-word;
+}
+
 .bar {
-    width:60%;
-    height:20px;
-    border:2px solid #00BFFF;
-    margin:10px auto;
+    width: 60%;
+    height: 20px;
+    border: 2px solid #00BFFF;
+    margin: 10px auto;
 }
+
 .fill {
-    height:100%;
-    background:#00BFFF;
-    width:0%;
+    height: 100%;
+    background: #00BFFF;
+    width: 0%;
 }
