@@ -1,6 +1,22 @@
 const latitude = 4.336;
 const longitude = -74.363;
 
+// ===== Obtener ubicación real del móvil =====
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+      latitude = pos.coords.latitude;
+      longitude = pos.coords.longitude;
+      console.log("Ubicación actual:", latitude, longitude);
+    },
+    function(err) {
+      console.warn("No se pudo obtener la ubicación, usando valores por defecto");
+    }
+  );
+} else {
+  console.warn("Geolocalización no soportada, usando valores por defecto");
+}
+
 function customCalendar(date){
     let dayOfYear = Math.floor((date - new Date(date.getFullYear(),0,0))/86400000);
     let month = Math.floor((dayOfYear-1)/29)+1;
