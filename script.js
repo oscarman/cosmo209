@@ -19,6 +19,12 @@ if (navigator.geolocation) {
   console.warn("Geolocalización no soportada, usando valores por defecto");
 }
 
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js')
+    .then(() => console.log('Service Worker registered'))
+    .catch(err => console.log('Service Worker failed', err));
+}
+
 function customCalendar(date){
     let dayOfYear = Math.floor((date - new Date(date.getFullYear(),0,0))/86400000);
     let month = Math.floor((dayOfYear-1)/29)+1;
