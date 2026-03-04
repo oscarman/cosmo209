@@ -1,0 +1,21 @@
+{
+  "name": "Cosmos 29",
+  "short_name": "Cosmos29",
+  "description": "Reloj Cosmos 29 en tu móvil",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b0b0b",
+  "theme_color": "#00BFFF",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
