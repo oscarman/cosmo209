@@ -1,6 +1,7 @@
 const latitude = 4.336;
 const longitude = -74.363;
 
+
 let now = new Date();
 // ===== Obtener ubicación real del móvil =====
 if (navigator.geolocation) {
