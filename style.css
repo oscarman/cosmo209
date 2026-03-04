@@ -28,6 +28,10 @@ h1, h2, h3 {
     word-wrap: break-word;
 }
 
+h1 { font-size: 12vw; }
+h2 { font-size: 6vw; }
+h3 { font-size: 4vw; }
+
 .bar {
     width: 60%;
     height: 20px;
