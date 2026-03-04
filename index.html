@@ -9,23 +9,24 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="container">
-    <h1 id="time">00:00:00</h1>
-    <h2 id="date">DIA 0 | MES 0 | ANNO 0</h2>
-    <h3 id="moon">FASE: LUNA NUEVA | EDAD: 0</h3>
-    <h3 id="season">ESTACION: ...</h3>
-    <h3 id="sun">ALBA: 00:00 | AMANECER: 00:00 | MEDIO DIA: 00:00</h3>
-    <h3 id="temp">TEMP: 0 K | VIENTO: 0 KM/H</h3>
-    <div class="bar"><div class="fill" id="energy"></div></div>
-</div>
-<script src="script.js"></script>
-<script>
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('sw.js')
-  .then(()=> console.log('Service Worker registrado'))
-  .catch(err=> console.log(err));
-}
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
+    <div id="container">
+        <h1 id="time">00:00:00</h1>
+        <h2 id="date">DIA 0 | MES 0 | ANNO 0</h2>
+        <h3 id="moon">FASE: LUNA NUEVA | EDAD: 0</h3>
+        <h3 id="season">ESTACION: ...</h3>
+        <h3 id="sun">ALBA: 00:00 | AMANECER: 00:00 | MEDIO DIA: 00:00</h3>
+        <h3 id="temp">TEMP: 0 K | VIENTO: 0 KM/H</h3>
+        <div class="bar"><div class="fill" id="energy"></div></div>
+    </div>
+    <script>
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.register('sw.js')
+      .then(()=> console.log('Service Worker registrado'))
+      .catch(err=> console.log(err));
+    }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
