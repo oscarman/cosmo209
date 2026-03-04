@@ -1,0 +1,18 @@
+body {
+    background:#0b0b0b;
+    color:#00BFFF;
+    font-family:sans-serif;
+    text-align:center;
+}
+h1,h2,h3 { margin:5px; }
+.bar {
+    width:60%;
+    height:20px;
+    border:2px solid #00BFFF;
+    margin:10px auto;
+}
+.fill {
+    height:100%;
+    background:#00BFFF;
+    width:0%;
+}
