@@ -19,5 +19,12 @@
     <div class="bar"><div class="fill" id="energy"></div></div>
 </div>
 <script src="script.js"></script>
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js')
+  .then(()=> console.log('Service Worker registrado'))
+  .catch(err=> console.log(err));
+}
+</script>
 </body>
 </html>
