@@ -218,7 +218,12 @@ function safeTime(t){
 
 if(!t || isNaN(t)) return "--:--";
 
-return t.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+return t.toLocaleTimeString("en-GB", {
+    timeZone: timezone,
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
+});
 
 }
 
