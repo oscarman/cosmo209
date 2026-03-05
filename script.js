@@ -163,75 +163,65 @@ return {temp:0,wind:0};
 
 }
 
-// convertir hora a decimal
+// OBTENER HORA EN ZONA HORARIA
 
-function hourDecimal(date){
+function getTimeParts(){
 
-let local = new Date(date.toLocaleString("en-US",{timeZone:timezone}));
+let parts = new Intl.DateTimeFormat("en-GB", {
+timeZone: timezone,
+hour: "2-digit",
+minute: "2-digit",
+second: "2-digit",
+hour12:false
+}).formatToParts(new Date());
 
-return local.getHours() + local.getMinutes()/60;
+let obj={};
 
-}
+parts.forEach(p=>{
+obj[p.type]=p.value;
+});
 
-// interpolar colores
-
-function mixColor(c1,c2,t){
-
-let r1=parseInt(c1.substr(1,2),16);
-let g1=parseInt(c1.substr(3,2),16);
-let b1=parseInt(c1.substr(5,2),16);
-
-let r2=parseInt(c2.substr(1,2),16);
-let g2=parseInt(c2.substr(3,2),16);
-let b2=parseInt(c2.substr(5,2),16);
-
-let r=Math.round(r1+(r2-r1)*t);
-let g=Math.round(g1+(g2-g1)*t);
-let b=Math.round(b1+(b2-b1)*t);
-
-return `rgb(${r},${g},${b})`;
+return obj;
 
 }
+
+// UPDATE
 
 function update(){
 
 let now = new Date();
 
-let local;
+let t = getTimeParts();
 
-try{
-local = new Date(now.toLocaleString("en-US",{timeZone:timezone}));
-}catch{
-local = now;
-}
-
-// HORA
-
-let h = String(local.getHours()).padStart(2,'0');
-let m = String(local.getMinutes()).padStart(2,'0');
-let s = String(local.getSeconds()).padStart(2,'0');
+let h = t.hour;
+let m = t.minute;
+let s = t.second;
 
 document.getElementById("time").innerText =
 `${h}:${m}:${s}`;
 
-// CALENDARIO
+// hora decimal
 
-let [d,mo,y] = customCalendar(local);
+let hour = Number(h) + Number(m)/60;
+
+// calendario
+
+let [d,mo,y] = customCalendar(now);
 
 document.getElementById("date").innerText =
 `DIA ${d} | MES ${mo} | AÑO ${y}`;
 
-// LUNA
+// luna
 
-let age = moonAge(local);
+let age = moonAge(now);
 
 document.getElementById("moon").innerText =
 `FASE ${moonPhase(age)} | EDAD ${age.toFixed(1)}`;
 
-// ESTACION
+// estación
 
 document.getElementById("season").innerText =
-`ESTACION ${getSeason(local)}`;
+`ESTACION ${getSeason(now)}`;
 
 // SOL
 
@@ -239,15 +229,14 @@ let sun = SunCalc.getTimes(now,latitude,longitude);
 
 function safeTime(t){
 
-if(!t || isNaN(t.getTime())) return "--:--";
+if(!t) return "--:--";
 
-let localTime =
-new Date(t.toLocaleString("en-US",{timeZone:timezone}));
-
-let hh = String(localTime.getHours()).padStart(2,'0');
-let mm = String(localTime.getMinutes()).padStart(2,'0');
-
-return `${hh}:${mm}`;
+return new Intl.DateTimeFormat("en-GB",{
+timeZone:timezone,
+hour:"2-digit",
+minute:"2-digit",
+hour12:false
+}).format(t);
 
 }
 
@@ -261,12 +250,10 @@ document.getElementById("dusk-text").innerText=`ANOCHECER ${safeTime(sun.dusk)}`
 
 let bar = document.getElementById("energy-fill");
 
-let sunrise = hourDecimal(sun.sunrise);
-let sunset = hourDecimal(sun.sunset);
+let sunrise = sun.sunrise.getHours()+sun.sunrise.getMinutes()/60;
+let sunset = sun.sunset.getHours()+sun.sunset.getMinutes()/60;
 
-let hour = local.getHours()+local.getMinutes()/60;
-
-let energy = 0;
+let energy=0;
 
 if(hour>=sunrise && hour<=sunset){
 energy=(hour-sunrise)/(sunset-sunrise);
@@ -275,44 +262,6 @@ energy=(hour-sunrise)/(sunset-sunrise);
 energy=Math.max(0,Math.min(1,energy));
 
 bar.style.width=(energy*100)+"%";
-
-// COLORES
-
-let dawn=hourDecimal(sun.dawn);
-let noon=hourDecimal(sun.solarNoon);
-let dusk=hourDecimal(sun.dusk);
-
-const C_NIGHT="#001a33";
-const C_DAWN="#6a00ff";
-const C_SUNRISE="#ff8c00";
-const C_NOON="#ffff33";
-const C_SUNSET="#ff4500";
-const C_DUSK="#003366";
-
-function interp(a,b,x){return (x-a)/(b-a);}
-
-let color=C_NIGHT;
-
-if(hour<dawn){
-color=mixColor(C_NIGHT,C_DAWN,hour/dawn);
-}
-else if(hour<sunrise){
-color=mixColor(C_DAWN,C_SUNRISE,interp(dawn,sunrise,hour));
-}
-else if(hour<noon){
-color=mixColor(C_SUNRISE,C_NOON,interp(sunrise,noon,hour));
-}
-else if(hour<sunset){
-color=mixColor(C_NOON,C_SUNSET,interp(noon,sunset,hour));
-}
-else if(hour<dusk){
-color=mixColor(C_SUNSET,C_DUSK,interp(sunset,dusk,hour));
-}
-else{
-color=mixColor(C_DUSK,C_NIGHT,(hour-dusk)/(24-dusk));
-}
-
-bar.style.background=color;
 
 // CLIMA
 
