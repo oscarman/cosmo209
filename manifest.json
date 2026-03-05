@@ -2,7 +2,7 @@
 "name":"Cosmos 29",
 "short_name":"Cosmos29",
 "description":"Reloj Cosmos 29",
-"display":"standalone",
+"display":"fullscreen",
 "start_url":"./index.html",
 "background_color":"#0b0b0b",
 "theme_color":"#00BFFF",
