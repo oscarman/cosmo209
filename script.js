@@ -1,9 +1,7 @@
 let latitude = 4.711;
 let longitude = -74.072;
 let timezone = "America/Bogota";
-
-let weatherCache = null;
-let lastWeatherUpdate = 0;
+let cityName = "Bogotá, Colombia";
 
 // UI
 
@@ -51,13 +49,13 @@ div.onclick = ()=>{
 latitude = Number(city.latitude);
 longitude = Number(city.longitude);
 
+cityName = `${city.name}, ${city.country}`;
+
 if(city.timezone){
 timezone = city.timezone;
 }
 
 panel.classList.add("hidden");
-
-update(); // fuerza actualización inmediata
 
 };
 
@@ -129,7 +127,9 @@ let seasons=[
 ];
 
 for(let s of seasons){
+
 if(date < s[1]) return s[0];
+
 }
 
 return "SOLSTICIO DICIEMBRE";
@@ -148,22 +148,22 @@ let url =
 let res = await fetch(url);
 let data = await res.json();
 
-weatherCache = {
+return {
+
 temp:data.current_weather.temperature+273.15,
 wind:data.current_weather.windspeed
-};
 
-lastWeatherUpdate = Date.now();
+};
 
 }catch{
 
-weatherCache = {temp:0,wind:0};
+return {temp:0,wind:0};
 
 }
 
 }
 
-// convertir hora decimal
+// convertir hora a decimal
 
 function hourDecimal(date){
 
@@ -173,19 +173,23 @@ return local.getHours() + local.getMinutes()/60;
 
 }
 
-// FORMATO HORA
+// interpolar colores
 
-function formatTime(t){
+function mixColor(c1,c2,t){
 
-if(!t || isNaN(t.getTime())) return "--:--";
+let r1=parseInt(c1.substr(1,2),16);
+let g1=parseInt(c1.substr(3,2),16);
+let b1=parseInt(c1.substr(5,2),16);
 
-let localTime =
-new Date(t.toLocaleString("en-US",{timeZone:timezone}));
+let r2=parseInt(c2.substr(1,2),16);
+let g2=parseInt(c2.substr(3,2),16);
+let b2=parseInt(c2.substr(5,2),16);
 
-let hh = String(localTime.getHours()).padStart(2,'0');
-let mm = String(localTime.getMinutes()).padStart(2,'0');
+let r=Math.round(r1+(r2-r1)*t);
+let g=Math.round(g1+(g2-g1)*t);
+let b=Math.round(b1+(b2-b1)*t);
 
-return `${hh}:${mm}`;
+return `rgb(${r},${g},${b})`;
 
 }
 
@@ -233,19 +237,54 @@ document.getElementById("season").innerText =
 
 // SOL
 
-let sun = SunCalc.getTimes(local,latitude,longitude);
+let sun = SunCalc.getTimes(now,latitude,longitude);
 
-document.getElementById("dawn-text").innerText=`ALBA ${formatTime(sun.dawn)}`;
-document.getElementById("sunrise-text").innerText=`AMANECER ${formatTime(sun.sunrise)}`;
-document.getElementById("noon-text").innerText=`MEDIO DIA ${formatTime(sun.solarNoon)}`;
-document.getElementById("sunset-text").innerText=`ATARDECER ${formatTime(sun.sunset)}`;
-document.getElementById("dusk-text").innerText=`ANOCHECER ${formatTime(sun.dusk)}`;
+function safeTime(t){
 
-// BARRA DE ENERGIA SOLAR
+if(!t || isNaN(t.getTime())) return "--:--";
+
+let localTime =
+new Date(t.toLocaleString("en-US",{timeZone:timezone}));
+
+let hh = String(localTime.getHours()).padStart(2,'0');
+let mm = String(localTime.getMinutes()).padStart(2,'0');
+
+return `${hh}:${mm}`;
+
+}
+
+document.getElementById("dawn-text").innerText=`ALBA ${safeTime(sun.dawn)}`;
+document.getElementById("sunrise-text").innerText=`AMANECER ${safeTime(sun.sunrise)}`;
+document.getElementById("noon-text").innerText=`MEDIO DIA ${safeTime(sun.solarNoon)}`;
+document.getElementById("sunset-text").innerText=`ATARDECER ${safeTime(sun.sunset)}`;
+document.getElementById("dusk-text").innerText=`ANOCHECER ${safeTime(sun.dusk)}`;
+
+// BARRA DE ENERGIA
 
 let bar = document.getElementById("energy-fill");
 
 if(sun.sunrise && sun.sunset){
+
+let sunrise = hourDecimal(sun.sunrise);
+let sunset = hourDecimal(sun.sunset);
+
+let hour = local.getHours()+local.getMinutes()/60;
+
+let energy = 0;
+
+if(hour >= sunrise && hour <= sunset){
+energy = (hour-sunrise)/(sunset-sunrise);
+}
+
+energy = Math.max(0,Math.min(1,energy));
+
+bar.style.width = (energy*100)+"%";
+
+}
+
+// COLORES GRADUALES 24H
+
+let sun = SunCalc.getTimes(now,latitude,longitude);
 
 let dawn = hourDecimal(sun.dawn);
 let sunrise = hourDecimal(sun.sunrise);
@@ -253,65 +292,55 @@ let noon = hourDecimal(sun.solarNoon);
 let sunset = hourDecimal(sun.sunset);
 let dusk = hourDecimal(sun.dusk);
 
-let hour = local.getHours() + local.getMinutes()/60;
+let hour = local.getHours()+local.getMinutes()/60;
 
-// progreso de energia (solo durante el dia)
+const C_NIGHT="#001a33";
+const C_DAWN="#6a00ff";
+const C_SUNRISE="#ff8c00";
+const C_NOON="#ffff33";
+const C_SUNSET="#ff4500";
+const C_DUSK="#003366";
 
-let energy = 0;
+let color=C_NIGHT;
 
-if(hour >= sunrise && hour <= sunset){
-energy = (hour - sunrise) / (sunset - sunrise);
+function interp(a,b,x){
+return (x-a)/(b-a);
 }
-
-energy = Math.max(0,Math.min(1,energy));
-
-bar.style.width = (energy*100)+"%";
-
-// COLORES SEGUN MOMENTO DEL DIA
 
 if(hour < dawn){
-
-bar.style.background = "#001a33"; // noche
-
+color = mixColor(C_NIGHT,C_DAWN, hour/dawn);
 }
 else if(hour < sunrise){
-
-bar.style.background = "#9933ff"; // alba (violeta)
-
+color = mixColor(C_DAWN,C_SUNRISE, interp(dawn,sunrise,hour));
 }
 else if(hour < noon){
-
-bar.style.background = "#ff9933"; // amanecer (naranja)
-
+color = mixColor(C_SUNRISE,C_NOON, interp(sunrise,noon,hour));
 }
 else if(hour < sunset){
-
-bar.style.background = "#ffff33"; // medio dia / tarde (amarillo)
-
+color = mixColor(C_NOON,C_SUNSET, interp(noon,sunset,hour));
 }
 else if(hour < dusk){
-
-bar.style.background = "#ff3300"; // atardecer (rojo)
-
+color = mixColor(C_SUNSET,C_DUSK, interp(sunset,dusk,hour));
 }
 else{
-
-bar.style.background = "#001a33"; // noche
-
+color = mixColor(C_DUSK,C_NIGHT, (hour-dusk)/(24-dusk));
 }
 
-}
+bar.style.background=color;
 
-// CLIMA (solo cada 10 minutos)
+// CLIMA
 
-if(Date.now() - lastWeatherUpdate > 600000){
-getWeather();
-}
+getWeather().then(w=>{
 
-if(weatherCache){
 document.getElementById("temp").innerText =
-`TEMP ${weatherCache.temp.toFixed(2)} K | VIENTO ${weatherCache.wind} KM/H`;
-}
+`TEMP ${w.temp.toFixed(2)} K | VIENTO ${w.wind} KM/H`;
+
+});
+
+// CIUDAD
+
+document.getElementById("city").innerText =
+`CIUDAD ${cityName}`;
 
 }
 
