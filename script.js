@@ -235,7 +235,7 @@ document.getElementById("noon-text").innerText=`MEDIO DIA ${safeTime(sun.solarNo
 document.getElementById("sunset-text").innerText=`ATARDECER ${safeTime(sun.sunset)}`;
 document.getElementById("dusk-text").innerText=`ANOCHECER ${safeTime(sun.dusk)}`;
 
-// energia solar segura
+// ENERGIA SOLAR + COLOR
 
 if(sun.sunrise && sun.sunset){
 
@@ -245,17 +245,53 @@ sun.sunrise.getHours()+sun.sunrise.getMinutes()/60;
 let sunset =
 sun.sunset.getHours()+sun.sunset.getMinutes()/60;
 
+let dawn =
+sun.dawn.getHours()+sun.dawn.getMinutes()/60;
+
+let dusk =
+sun.dusk.getHours()+sun.dusk.getMinutes()/60;
+
 let hour =
 local.getHours()+local.getMinutes()/60;
 
+// progreso del día
 let energy =
 (hour-sunrise)/(sunset-sunrise);
 
 energy =
 Math.max(0,Math.min(1,energy));
 
-document.getElementById("energy-fill").style.width =
-(energy*100)+"%";
+let bar = document.getElementById("energy-fill");
+
+bar.style.width = (energy*100)+"%";
+
+// COLORES SEGUN MOMENTO DEL DIA
+
+if(hour < dawn){
+
+bar.style.background = "#001a33"; // 🌑 noche profunda
+
+}
+else if(hour < sunrise){
+
+bar.style.background = "#ff9933"; // 🌅 amanecer
+
+}
+else if(hour < sunset){
+
+bar.style.background = "#ffff33"; // ☀ dia
+
+}
+else if(hour < dusk){
+
+bar.style.background = "#ff6600"; // 🌇 atardecer
+
+}
+else{
+
+bar.style.background = "#003366"; // 🌙 anochecer
+
+}
 
 }
 
