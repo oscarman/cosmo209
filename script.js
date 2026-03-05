@@ -2,6 +2,9 @@ let latitude = 4.711;
 let longitude = -74.072;
 let timezone = "America/Bogota";
 
+let weatherCache = null;
+let lastWeatherUpdate = 0;
+
 // UI
 
 const btn = document.getElementById("locationBtn");
@@ -53,6 +56,8 @@ timezone = city.timezone;
 }
 
 panel.classList.add("hidden");
+
+update(); // fuerza actualización inmediata
 
 };
 
@@ -124,9 +129,7 @@ let seasons=[
 ];
 
 for(let s of seasons){
-
 if(date < s[1]) return s[0];
-
 }
 
 return "SOLSTICIO DICIEMBRE";
@@ -145,28 +148,44 @@ let url =
 let res = await fetch(url);
 let data = await res.json();
 
-return {
-
+weatherCache = {
 temp:data.current_weather.temperature+273.15,
 wind:data.current_weather.windspeed
-
 };
+
+lastWeatherUpdate = Date.now();
 
 }catch{
 
-return {temp:0,wind:0};
+weatherCache = {temp:0,wind:0};
 
 }
 
 }
 
-// convertir fecha a hora decimal en la zona horaria correcta
+// convertir hora decimal
 
 function hourDecimal(date){
 
 let local = new Date(date.toLocaleString("en-US",{timeZone:timezone}));
 
 return local.getHours() + local.getMinutes()/60;
+
+}
+
+// FORMATO HORA
+
+function formatTime(t){
+
+if(!t || isNaN(t.getTime())) return "--:--";
+
+let localTime =
+new Date(t.toLocaleString("en-US",{timeZone:timezone}));
+
+let hh = String(localTime.getHours()).padStart(2,'0');
+let mm = String(localTime.getMinutes()).padStart(2,'0');
+
+return `${hh}:${mm}`;
 
 }
 
@@ -216,27 +235,13 @@ document.getElementById("season").innerText =
 
 let sun = SunCalc.getTimes(local,latitude,longitude);
 
-function safeTime(t){
+document.getElementById("dawn-text").innerText=`ALBA ${formatTime(sun.dawn)}`;
+document.getElementById("sunrise-text").innerText=`AMANECER ${formatTime(sun.sunrise)}`;
+document.getElementById("noon-text").innerText=`MEDIO DIA ${formatTime(sun.solarNoon)}`;
+document.getElementById("sunset-text").innerText=`ATARDECER ${formatTime(sun.sunset)}`;
+document.getElementById("dusk-text").innerText=`ANOCHECER ${formatTime(sun.dusk)}`;
 
-if(!t || isNaN(t.getTime())) return "--:--";
-
-let localTime =
-new Date(t.toLocaleString("en-US",{timeZone:timezone}));
-
-let hh = String(localTime.getHours()).padStart(2,'0');
-let mm = String(localTime.getMinutes()).padStart(2,'0');
-
-return `${hh}:${mm}`;
-
-}
-
-document.getElementById("dawn-text").innerText=`ALBA ${safeTime(sun.dawn)}`;
-document.getElementById("sunrise-text").innerText=`AMANECER ${safeTime(sun.sunrise)}`;
-document.getElementById("noon-text").innerText=`MEDIO DIA ${safeTime(sun.solarNoon)}`;
-document.getElementById("sunset-text").innerText=`ATARDECER ${safeTime(sun.sunset)}`;
-document.getElementById("dusk-text").innerText=`ANOCHECER ${safeTime(sun.dusk)}`;
-
-// BARRA DE ENERGIA
+// BARRA ENERGIA
 
 let bar = document.getElementById("energy-fill");
 
@@ -279,14 +284,16 @@ bar.style.background = "#001a33";
 
 }
 
-// CLIMA
+// CLIMA (solo cada 10 minutos)
 
-getWeather().then(w=>{
+if(Date.now() - lastWeatherUpdate > 600000){
+getWeather();
+}
 
+if(weatherCache){
 document.getElementById("temp").innerText =
-`TEMP ${w.temp.toFixed(2)} K | VIENTO ${w.wind} KM/H`;
-
-});
+`TEMP ${weatherCache.temp.toFixed(2)} K | VIENTO ${weatherCache.wind} KM/H`;
+}
 
 }
 
