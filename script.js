@@ -241,45 +241,63 @@ document.getElementById("noon-text").innerText=`MEDIO DIA ${formatTime(sun.solar
 document.getElementById("sunset-text").innerText=`ATARDECER ${formatTime(sun.sunset)}`;
 document.getElementById("dusk-text").innerText=`ANOCHECER ${formatTime(sun.dusk)}`;
 
-// BARRA ENERGIA
+// BARRA DE ENERGIA SOLAR
 
 let bar = document.getElementById("energy-fill");
 
 if(sun.sunrise && sun.sunset){
 
-let sunrise = hourDecimal(sun.sunrise);
-let sunset = hourDecimal(sun.sunset);
 let dawn = hourDecimal(sun.dawn);
+let sunrise = hourDecimal(sun.sunrise);
+let noon = hourDecimal(sun.solarNoon);
+let sunset = hourDecimal(sun.sunset);
 let dusk = hourDecimal(sun.dusk);
 
 let hour = local.getHours() + local.getMinutes()/60;
 
+// progreso de energia (solo durante el dia)
+
 let energy = 0;
 
 if(hour >= sunrise && hour <= sunset){
-energy = (hour-sunrise)/(sunset-sunrise);
+energy = (hour - sunrise) / (sunset - sunrise);
 }
 
 energy = Math.max(0,Math.min(1,energy));
 
 bar.style.width = (energy*100)+"%";
 
-// COLORES
+// COLORES SEGUN MOMENTO DEL DIA
 
 if(hour < dawn){
-bar.style.background = "#001a33";
+
+bar.style.background = "#001a33"; // noche
+
 }
 else if(hour < sunrise){
-bar.style.background = "#ff9933";
+
+bar.style.background = "#9933ff"; // alba (violeta)
+
+}
+else if(hour < noon){
+
+bar.style.background = "#ff9933"; // amanecer (naranja)
+
 }
 else if(hour < sunset){
-bar.style.background = "#ffff33";
+
+bar.style.background = "#ffff33"; // medio dia / tarde (amarillo)
+
 }
 else if(hour < dusk){
-bar.style.background = "#ff6600";
+
+bar.style.background = "#ff3300"; // atardecer (rojo)
+
 }
 else{
-bar.style.background = "#001a33";
+
+bar.style.background = "#001a33"; // noche
+
 }
 
 }
