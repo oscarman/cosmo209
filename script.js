@@ -74,6 +74,7 @@ function customCalendar(date){
 
 let start = new Date(date.getFullYear(),0,0);
 let diff = date - start;
+
 let dayOfYear = Math.floor(diff/86400000);
 
 let month = Math.floor((dayOfYear-1)/29)+1;
@@ -92,7 +93,7 @@ const CYCLE = 29.530588;
 
 let diff = (date - REF)/86400000;
 
-return diff % CYCLE;
+return (diff % CYCLE + CYCLE) % CYCLE;
 
 }
 
@@ -159,13 +160,13 @@ return {temp:0,wind:0};
 
 }
 
-// convertir hora a decimal en zona horaria correcta
+// convertir fecha a hora decimal en la zona horaria correcta
 
 function hourDecimal(date){
 
-let t = new Date(date.toLocaleString("en-US",{timeZone:timezone}));
+let local = new Date(date.toLocaleString("en-US",{timeZone:timezone}));
 
-return t.getHours() + t.getMinutes()/60;
+return local.getHours() + local.getMinutes()/60;
 
 }
 
@@ -183,7 +184,7 @@ local = new Date(now.toLocaleString("en-US",{timeZone:timezone}));
 local = now;
 }
 
-// hora
+// HORA
 
 let h = String(local.getHours()).padStart(2,'0');
 let m = String(local.getMinutes()).padStart(2,'0');
@@ -192,28 +193,28 @@ let s = String(local.getSeconds()).padStart(2,'0');
 document.getElementById("time").innerText =
 `${h}:${m}:${s}`;
 
-// calendario
+// CALENDARIO
 
 let [d,mo,y] = customCalendar(local);
 
 document.getElementById("date").innerText =
 `DIA ${d} | MES ${mo} | AÑO ${y}`;
 
-// luna
+// LUNA
 
 let age = moonAge(local);
 
 document.getElementById("moon").innerText =
 `FASE ${moonPhase(age)} | EDAD ${age.toFixed(1)}`;
 
-// estacion
+// ESTACION
 
 document.getElementById("season").innerText =
 `ESTACION ${getSeason(local)}`;
 
 // SOL
 
-let sun = SunCalc.getTimes(local,latitude,longitude);
+let sun = SunCalc.getTimes(now,latitude,longitude);
 
 function safeTime(t){
 
@@ -222,10 +223,10 @@ if(!t || isNaN(t.getTime())) return "--:--";
 let localTime =
 new Date(t.toLocaleString("en-US",{timeZone:timezone}));
 
-let h = String(localTime.getHours()).padStart(2,'0');
-let m = String(localTime.getMinutes()).padStart(2,'0');
+let hh = String(localTime.getHours()).padStart(2,'0');
+let mm = String(localTime.getMinutes()).padStart(2,'0');
 
-return `${h}:${m}`;
+return `${hh}:${mm}`;
 
 }
 
@@ -235,7 +236,9 @@ document.getElementById("noon-text").innerText=`MEDIO DIA ${safeTime(sun.solarNo
 document.getElementById("sunset-text").innerText=`ATARDECER ${safeTime(sun.sunset)}`;
 document.getElementById("dusk-text").innerText=`ANOCHECER ${safeTime(sun.dusk)}`;
 
-// ENERGIA SOLAR + COLOR
+// BARRA DE ENERGIA
+
+let bar = document.getElementById("energy-fill");
 
 if(sun.sunrise && sun.sunset){
 
@@ -246,45 +249,37 @@ let dusk = hourDecimal(sun.dusk);
 
 let hour = local.getHours() + local.getMinutes()/60;
 
-let energy = (hour-sunrise)/(sunset-sunrise);
+let energy = 0;
+
+if(hour >= sunrise && hour <= sunset){
+energy = (hour-sunrise)/(sunset-sunrise);
+}
 
 energy = Math.max(0,Math.min(1,energy));
 
-let bar = document.getElementById("energy-fill");
-
 bar.style.width = (energy*100)+"%";
 
-// colores según momento
+// COLORES
 
 if(hour < dawn){
-
-bar.style.background = "#001a33"; // 🌑 noche
-
+bar.style.background = "#001a33";
 }
 else if(hour < sunrise){
-
-bar.style.background = "#ff9933"; // 🌅 amanecer
-
+bar.style.background = "#ff9933";
 }
 else if(hour < sunset){
-
-bar.style.background = "#ffff33"; // ☀ dia
-
+bar.style.background = "#ffff33";
 }
 else if(hour < dusk){
-
-bar.style.background = "#ff6600"; // 🌇 atardecer
-
+bar.style.background = "#ff6600";
 }
 else{
-
-bar.style.background = "#001a33"; // 🌙 noche
-
+bar.style.background = "#001a33";
 }
 
 }
 
-// clima
+// CLIMA
 
 getWeather().then(w=>{
 
