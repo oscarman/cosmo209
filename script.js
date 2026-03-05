@@ -216,14 +216,16 @@ let sun = SunCalc.getTimes(local,latitude,longitude);
 
 function safeTime(t){
 
-if(!t || isNaN(t)) return "--:--";
+if(!t || isNaN(t.getTime())) return "--:--";
 
-return t.toLocaleTimeString("en-GB", {
-    timeZone: timezone,
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false
-});
+// convertir a hora de la ciudad seleccionada
+let localTime =
+new Date(t.toLocaleString("en-US",{timeZone:timezone}));
+
+let h = String(localTime.getHours()).padStart(2,'0');
+let m = String(localTime.getMinutes()).padStart(2,'0');
+
+return `${h}:${m}`;
 
 }
 
