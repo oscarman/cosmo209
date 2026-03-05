@@ -214,7 +214,7 @@ document.getElementById("season").innerText =
 
 // SOL
 
-let sun = SunCalc.getTimes(now,latitude,longitude);
+let sun = SunCalc.getTimes(local,latitude,longitude);
 
 function safeTime(t){
 
