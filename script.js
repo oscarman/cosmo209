@@ -10,29 +10,26 @@ const input = document.getElementById("cityInput");
 const results = document.getElementById("cityResults");
 
 btn.onclick = () => {
-
 panel.classList.toggle("hidden");
-
 };
 
 // BUSCAR CIUDADES
 
 input.oninput = async () => {
 
-let query = input.value;
+let query = input.value.trim();
 
 if(query.length < 2){
-
 results.innerHTML="";
 return;
-
 }
+
+try{
 
 let url =
 `https://geocoding-api.open-meteo.com/v1/search?name=${query}&count=10&language=es&format=json`;
 
 let res = await fetch(url);
-
 let data = await res.json();
 
 results.innerHTML="";
@@ -42,17 +39,18 @@ if(!data.results) return;
 data.results.forEach(city=>{
 
 let div = document.createElement("div");
-
 div.className="cityItem";
 
 div.innerText = `${city.name}, ${city.country}`;
 
 div.onclick = ()=>{
 
-latitude = city.latitude;
-longitude = city.longitude;
+latitude = Number(city.latitude);
+longitude = Number(city.longitude);
 
+if(city.timezone){
 timezone = city.timezone;
+}
 
 panel.classList.add("hidden");
 
@@ -62,17 +60,25 @@ results.appendChild(div);
 
 });
 
+}catch(e){
+
+console.log("Error buscando ciudad",e);
+
+}
+
 };
 
 // CALENDARIO COSMOS 29
 
 function customCalendar(date){
 
-let dayOfYear =
-Math.floor((date - new Date(date.getFullYear(),0,0))/86400000);
+let start = new Date(date.getFullYear(),0,0);
+
+let diff = date - start;
+
+let dayOfYear = Math.floor(diff/86400000);
 
 let month = Math.floor((dayOfYear-1)/29)+1;
-
 let day = (dayOfYear-1)%29+1;
 
 return [day,month,date.getFullYear()];
@@ -84,7 +90,6 @@ return [day,month,date.getFullYear()];
 function moonAge(date){
 
 const REF = new Date(Date.UTC(2000,0,6,18,14));
-
 const CYCLE = 29.530588;
 
 let diff = (date - REF)/86400000;
@@ -121,7 +126,7 @@ let seasons=[
 
 for(let s of seasons){
 
-if(date<s[1]) return s[0];
+if(date < s[1]) return s[0];
 
 }
 
@@ -163,8 +168,21 @@ function update(){
 
 let now = new Date();
 
-let local =
-new Date(now.toLocaleString("en-US",{timeZone:timezone}));
+// obtener hora local segura
+
+let local;
+
+try{
+
+local = new Date(now.toLocaleString("en-US",{timeZone:timezone}));
+
+}catch{
+
+local = now;
+
+}
+
+// hora
 
 let h = String(local.getHours()).padStart(2,'0');
 let m = String(local.getMinutes()).padStart(2,'0');
@@ -173,34 +191,46 @@ let s = String(local.getSeconds()).padStart(2,'0');
 document.getElementById("time").innerText =
 `${h}:${m}:${s}`;
 
+// calendario
+
 let [d,mo,y] = customCalendar(local);
 
 document.getElementById("date").innerText =
 `DIA ${d} | MES ${mo} | AÑO ${y}`;
+
+// luna
 
 let age = moonAge(local);
 
 document.getElementById("moon").innerText =
 `FASE ${moonPhase(age)} | EDAD ${age.toFixed(1)}`;
 
+// estacion
+
 document.getElementById("season").innerText =
 `ESTACION ${getSeason(local)}`;
 
+// sol
+
 let sun = SunCalc.getTimes(local,latitude,longitude);
 
-function f(t){
+function safeTime(t){
 
-return t ?
-t.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})
-:"--:--";
+if(!t || isNaN(t)) return "--:--";
+
+return t.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
 
 }
 
-document.getElementById("dawn-text").innerText=`ALBA ${f(sun.dawn)}`;
-document.getElementById("sunrise-text").innerText=`AMANECER ${f(sun.sunrise)}`;
-document.getElementById("noon-text").innerText=`MEDIO DIA ${f(sun.solarNoon)}`;
-document.getElementById("sunset-text").innerText=`ATARDECER ${f(sun.sunset)}`;
-document.getElementById("dusk-text").innerText=`ANOCHECER ${f(sun.dusk)}`;
+document.getElementById("dawn-text").innerText=`ALBA ${safeTime(sun.dawn)}`;
+document.getElementById("sunrise-text").innerText=`AMANECER ${safeTime(sun.sunrise)}`;
+document.getElementById("noon-text").innerText=`MEDIO DIA ${safeTime(sun.solarNoon)}`;
+document.getElementById("sunset-text").innerText=`ATARDECER ${safeTime(sun.sunset)}`;
+document.getElementById("dusk-text").innerText=`ANOCHECER ${safeTime(sun.dusk)}`;
+
+// energia solar segura
+
+if(sun.sunrise && sun.sunset){
 
 let sunrise =
 sun.sunrise.getHours()+sun.sunrise.getMinutes()/60;
@@ -219,6 +249,10 @@ Math.max(0,Math.min(1,energy));
 
 document.getElementById("energy-fill").style.width =
 (energy*100)+"%";
+
+}
+
+// clima
 
 getWeather().then(w=>{
 
