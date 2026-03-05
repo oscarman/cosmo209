@@ -167,21 +167,18 @@ return {temp:0,wind:0};
 
 function getTimeParts(){
 
-let parts = new Intl.DateTimeFormat("en-GB", {
+let timeString = new Date().toLocaleTimeString("en-GB",{
 timeZone: timezone,
-hour: "2-digit",
-minute: "2-digit",
-second: "2-digit",
 hour12:false
-}).formatToParts(new Date());
-
-let obj={};
-
-parts.forEach(p=>{
-obj[p.type]=p.value;
 });
 
-return obj;
+let parts = timeString.split(":");
+
+return {
+hour: parts[0],
+minute: parts[1],
+second: parts[2]
+};
 
 }
 
