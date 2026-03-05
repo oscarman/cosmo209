@@ -1,98 +1,194 @@
 body {
-    background: #0b0b0b;
-    color: #00BFFF;
-    font-family: sans-serif;
-    margin: 0;
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+
+background:#0b0b0b;
+color:#00BFFF;
+
+font-family:sans-serif;
+
+margin:0;
+
+height:100vh;
+width:100vw;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+overflow:hidden;
+
 }
 
-#container {
-    transform: rotate(-90deg);
-    transform-origin: center center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100vh; /* usamos altura del body como ancho del contenedor */
-    height: 100vw; /* usamos ancho del body como altura del contenedor */
+#container{
+
+transform:rotate(-90deg);
+
+display:flex;
+flex-direction:column;
+
+align-items:center;
+justify-content:center;
+
+width:100vh;
+height:100vw;
+
 }
 
-h1, h2, h3 {
-    margin: 5px;
-    text-align: center;
-    word-wrap: break-word;
+h1,h2,h3{
+
+margin:5px;
+text-align:center;
+
 }
 
-h1 { font-size: 12vw; }
-h2 { font-size: 6vw; }
-h3 { font-size: 4vw; }
+h1{font-size:12vw;}
+h2{font-size:6vw;}
+h3{font-size:4vw;}
 
-.bar {
-    width: 60%;
-    height: 20px;
-    border: 2px solid #00BFFF;
-    margin: 10px auto;
+#sun-box{
+
+display:flex;
+flex-direction:column;
+
+align-items:center;
+
+background:rgba(0,191,255,0.05);
+
+padding:10px;
+
+border:2px solid #00BFFF;
+
+border-radius:10px;
+
+margin:10px 0;
+
+width:90%;
+
 }
 
-.fill {
-    height: 100%;
-    background: #00BFFF;
-    width: 0%;
+.sun-row{
+
+display:flex;
+justify-content:space-between;
+
+width:100%;
+
+margin:5px 0;
+
 }
 
-#sun-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 191, 255, 0.05); /* ligera caja azul neon */
-    padding: 10px 20px;
-    border: 2px solid #00BFFF;
-    border-radius: 12px;
-    margin: 10px 0;
-    width: 90%;
-    max-width: 400px;
+#row2{
+justify-content:center;
 }
 
-.sun-row {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin: 5px 0;
+#energy-bar{
+
+width:100%;
+
+height:8px;
+
+background:rgba(0,191,255,0.2);
+
+border-radius:4px;
+
+overflow:hidden;
+
 }
 
-#row2 {
-    justify-content: center; /* centrar MEDIO DIA */
+#energy-fill{
+
+height:100%;
+
+background:#00BFFF;
+
+width:0%;
+
+transition:width 0.5s;
+
 }
 
-.sun-row span {
-    color: #00BFFF;
-    font-size: 1rem;
-    font-weight: bold;
-    text-align: center;
+/* BOTON LOCALIZACION */
+
+#locationBtn{
+
+position:fixed;
+
+top:20px;
+left:20px;
+
+background:#00BFFF;
+
+color:black;
+
+border:none;
+
+padding:10px 15px;
+
+border-radius:8px;
+
+font-weight:bold;
+
+cursor:pointer;
+
 }
 
-/* Contenedor de la barra */
-#energy-bar {
-    width: 100%; /* ocupará TODO el ancho de #sun-box */
-    max-width: 100%; /* no exceder el cajón */
-    height: 8px;   /* altura de la barra */
-    background-color: rgba(0, 191, 255, 0.1); /* fondo ligero azul */
-    border-radius: 4px;
-    margin: 5px 0;
-    overflow: hidden;
+/* PANEL BUSQUEDA */
+
+#locationPanel{
+
+position:fixed;
+
+top:60px;
+left:20px;
+
+width:260px;
+
+background:black;
+
+border:2px solid #00BFFF;
+
+padding:10px;
+
 }
 
-/* Relleno dinámico de energía */
-#energy-fill {
-    width: 0%; /* se actualizará en JS */
-    height: 100%;
-    background-color: #00BFFF; /* azul neón */
-    transition: width 0.5s ease-in-out;
+#cityInput{
+
+width:100%;
+
+padding:6px;
+
+background:#0b0b0b;
+
+color:#00BFFF;
+
+border:1px solid #00BFFF;
+
 }
 
+#cityResults{
+
+max-height:200px;
+
+overflow-y:auto;
+
+margin-top:10px;
+
+}
+
+.cityItem{
+
+padding:6px;
+
+cursor:pointer;
+
+}
+
+.cityItem:hover{
+
+background:#00BFFF;
+color:black;
+
+}
+
+.hidden{
+display:none;
+}
