@@ -1,40 +1,72 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="theme-color" content="#00BFFF">
-        <link rel="manifest" href="manifest.json">
-        <title>Cosmos 29</title>
-        <link rel="stylesheet" href="style.css">
-    </head>
-    
-    <body>
-        <div id="container">
-            <h1 id="time">00:00</h1>
-            <h2 id="date">DIA 0 | MES 0 | AÑO 0</h2>
-            <h3 id="moon">FASE: LUNA NUEVA | EDAD: 0</h3>
-            <h3 id="season">ESTACION: ...</h3>
-        <div id="sun-box">
-        <div class="sun-row">    
-            <span id="dawn-text">ALBA: --:--</span>
-            <span id="sunrise-text">AMANECER: --:--</span>
-        </div>
-        <div class="sun-row" id="row2">
-            <span id="noon-text">MEDIO DIA: --:--</span>
-        </div>
-        <div class="sun-row">
-            <span id="sunset-text">ATARDECER: --:--</span>
-            <span id="dusk-text">ANOCHECER: --:--</span>
-        </div>
-        <div id="energy-bar">
-            <div id="energy-fill"></div>
-        </div>
-        </div>
-            <h3 id="temp">TEMP: 0 K | VIENTO: 0 KM/H</h3>
-        </div>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
-        <script src="script.js"></script>
-    
-    </body>
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="theme-color" content="#00BFFF">
+
+<title>Cosmos 29</title>
+
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<button id="locationBtn">🌍 CIUDAD</button>
+
+<div id="locationPanel" class="hidden">
+
+<input id="cityInput" placeholder="Buscar ciudad...">
+
+<div id="cityResults"></div>
+
+</div>
+
+<div id="container">
+
+<h1 id="time">00:00:00</h1>
+
+<h2 id="date">DIA 0 | MES 0 | AÑO 0</h2>
+
+<h3 id="moon">FASE</h3>
+
+<h3 id="season">ESTACION</h3>
+
+<div id="sun-box">
+
+<div class="sun-row">
+<span id="dawn-text">ALBA</span>
+<span id="sunrise-text">AMANECER</span>
+</div>
+
+<div class="sun-row" id="row2">
+<span id="noon-text">MEDIO DIA</span>
+</div>
+
+<div class="sun-row">
+<span id="sunset-text">ATARDECER</span>
+<span id="dusk-text">ANOCHECER</span>
+</div>
+
+<div id="energy-bar">
+<div id="energy-fill"></div>
+</div>
+
+</div>
+
+<h3 id="temp">TEMP</h3>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
+
+<script src="script.js"></script>
+
+</body>
+
 </html>
