@@ -94,9 +94,6 @@ function update(){
     let dusk = formatTime(sunTimes.dusk);
     
     // Mostrar en pantalla
-    document.getElementById("sun").innerText = 
-      `ALBA: ${dawn} | AMANECER: ${sunrise} | MEDIO DIA: ${solarNoon} | ATARDECER: ${sunset} | ANOCHECER: ${dusk}`;
-
     document.getElementById("dawn-text").innerText = `ALBA: ${dawn}`;
     document.getElementById("sunrise-text").innerText = `AMANECER: ${sunrise}`;
     document.getElementById("noon-text").innerText = `MEDIO DIA: ${solarNoon}`;
