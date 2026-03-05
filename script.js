@@ -167,12 +167,12 @@ return {temp:0,wind:0};
 
 function getTimeParts(){
 
-let timeString = new Date().toLocaleTimeString("en-GB",{
+let date = new Date().toLocaleTimeString("en-GB",{
 timeZone: timezone,
 hour12:false
 });
 
-let parts = timeString.split(":");
+let parts = date.split(":");
 
 return {
 hour: parts[0],
