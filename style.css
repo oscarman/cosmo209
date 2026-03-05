@@ -95,15 +95,9 @@ overflow:hidden;
 }
 
 #energy-fill{
-
 height:100%;
-
-background:#00BFFF;
-
 width:0%;
-
-transition:width 0.5s;
-
+transition:width 0.5s, background 0.5s;
 }
 
 /* BOTON LOCALIZACION */
