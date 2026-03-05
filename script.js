@@ -73,9 +73,7 @@ console.log("Error buscando ciudad",e);
 function customCalendar(date){
 
 let start = new Date(date.getFullYear(),0,0);
-
 let diff = date - start;
-
 let dayOfYear = Math.floor(diff/86400000);
 
 let month = Math.floor((dayOfYear-1)/29)+1;
@@ -144,7 +142,6 @@ let url =
 `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`;
 
 let res = await fetch(url);
-
 let data = await res.json();
 
 return {
@@ -162,24 +159,28 @@ return {temp:0,wind:0};
 
 }
 
+// convertir hora a decimal en zona horaria correcta
+
+function hourDecimal(date){
+
+let t = new Date(date.toLocaleString("en-US",{timeZone:timezone}));
+
+return t.getHours() + t.getMinutes()/60;
+
+}
+
 // UPDATE
 
 function update(){
 
 let now = new Date();
 
-// obtener hora local segura
-
 let local;
 
 try{
-
 local = new Date(now.toLocaleString("en-US",{timeZone:timezone}));
-
 }catch{
-
 local = now;
-
 }
 
 // hora
@@ -210,7 +211,7 @@ document.getElementById("moon").innerText =
 document.getElementById("season").innerText =
 `ESTACION ${getSeason(local)}`;
 
-// sol
+// SOL
 
 let sun = SunCalc.getTimes(local,latitude,longitude);
 
@@ -218,7 +219,6 @@ function safeTime(t){
 
 if(!t || isNaN(t.getTime())) return "--:--";
 
-// convertir a hora de la ciudad seleccionada
 let localTime =
 new Date(t.toLocaleString("en-US",{timeZone:timezone}));
 
@@ -239,37 +239,26 @@ document.getElementById("dusk-text").innerText=`ANOCHECER ${safeTime(sun.dusk)}`
 
 if(sun.sunrise && sun.sunset){
 
-let sunrise =
-sun.sunrise.getHours()+sun.sunrise.getMinutes()/60;
+let sunrise = hourDecimal(sun.sunrise);
+let sunset = hourDecimal(sun.sunset);
+let dawn = hourDecimal(sun.dawn);
+let dusk = hourDecimal(sun.dusk);
 
-let sunset =
-sun.sunset.getHours()+sun.sunset.getMinutes()/60;
+let hour = local.getHours() + local.getMinutes()/60;
 
-let dawn =
-sun.dawn.getHours()+sun.dawn.getMinutes()/60;
+let energy = (hour-sunrise)/(sunset-sunrise);
 
-let dusk =
-sun.dusk.getHours()+sun.dusk.getMinutes()/60;
-
-let hour =
-local.getHours()+local.getMinutes()/60;
-
-// progreso del día
-let energy =
-(hour-sunrise)/(sunset-sunrise);
-
-energy =
-Math.max(0,Math.min(1,energy));
+energy = Math.max(0,Math.min(1,energy));
 
 let bar = document.getElementById("energy-fill");
 
 bar.style.width = (energy*100)+"%";
 
-// COLORES SEGUN MOMENTO DEL DIA
+// colores según momento
 
 if(hour < dawn){
 
-bar.style.background = "#001a33"; // 🌑 noche profunda
+bar.style.background = "#001a33"; // 🌑 noche
 
 }
 else if(hour < sunrise){
@@ -289,7 +278,7 @@ bar.style.background = "#ff6600"; // 🌇 atardecer
 }
 else{
 
-bar.style.background = "#003366"; // 🌙 anochecer
+bar.style.background = "#001a33"; // 🌙 noche
 
 }
 
