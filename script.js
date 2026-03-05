@@ -1,6 +1,6 @@
 let latitude = 4.711;
 let longitude = -74.072;
-let timezoneOffset = 0;
+let timezone = "America/Bogota";
 
 // UI
 
@@ -52,7 +52,7 @@ div.onclick = ()=>{
 latitude = city.latitude;
 longitude = city.longitude;
 
-timezoneOffset = city.timezone_offset;
+timezone = city.timezone;
 
 panel.classList.add("hidden");
 
@@ -164,7 +164,7 @@ function update(){
 let now = new Date();
 
 let local =
-new Date(now.getTime() + timezoneOffset*1000);
+new Date(now.toLocaleString("en-US",{timeZone:timezone}));
 
 let h = String(local.getHours()).padStart(2,'0');
 let m = String(local.getMinutes()).padStart(2,'0');
