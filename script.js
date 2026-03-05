@@ -193,8 +193,6 @@ return `rgb(${r},${g},${b})`;
 
 }
 
-// UPDATE
-
 function update(){
 
 let now = new Date();
@@ -259,11 +257,9 @@ document.getElementById("noon-text").innerText=`MEDIO DIA ${safeTime(sun.solarNo
 document.getElementById("sunset-text").innerText=`ATARDECER ${safeTime(sun.sunset)}`;
 document.getElementById("dusk-text").innerText=`ANOCHECER ${safeTime(sun.dusk)}`;
 
-// BARRA DE ENERGIA
+// BARRA ENERGIA
 
 let bar = document.getElementById("energy-fill");
-
-if(sun.sunrise && sun.sunset){
 
 let sunrise = hourDecimal(sun.sunrise);
 let sunset = hourDecimal(sun.sunset);
@@ -272,27 +268,19 @@ let hour = local.getHours()+local.getMinutes()/60;
 
 let energy = 0;
 
-if(hour >= sunrise && hour <= sunset){
-energy = (hour-sunrise)/(sunset-sunrise);
+if(hour>=sunrise && hour<=sunset){
+energy=(hour-sunrise)/(sunset-sunrise);
 }
 
-energy = Math.max(0,Math.min(1,energy));
+energy=Math.max(0,Math.min(1,energy));
 
-bar.style.width = (energy*100)+"%";
+bar.style.width=(energy*100)+"%";
 
-}
+// COLORES
 
-// COLORES GRADUALES 24H
-
-let sun = SunCalc.getTimes(now,latitude,longitude);
-
-let dawn = hourDecimal(sun.dawn);
-let sunrise = hourDecimal(sun.sunrise);
-let noon = hourDecimal(sun.solarNoon);
-let sunset = hourDecimal(sun.sunset);
-let dusk = hourDecimal(sun.dusk);
-
-let hour = local.getHours()+local.getMinutes()/60;
+let dawn=hourDecimal(sun.dawn);
+let noon=hourDecimal(sun.solarNoon);
+let dusk=hourDecimal(sun.dusk);
 
 const C_NIGHT="#001a33";
 const C_DAWN="#6a00ff";
@@ -301,29 +289,27 @@ const C_NOON="#ffff33";
 const C_SUNSET="#ff4500";
 const C_DUSK="#003366";
 
+function interp(a,b,x){return (x-a)/(b-a);}
+
 let color=C_NIGHT;
 
-function interp(a,b,x){
-return (x-a)/(b-a);
+if(hour<dawn){
+color=mixColor(C_NIGHT,C_DAWN,hour/dawn);
 }
-
-if(hour < dawn){
-color = mixColor(C_NIGHT,C_DAWN, hour/dawn);
+else if(hour<sunrise){
+color=mixColor(C_DAWN,C_SUNRISE,interp(dawn,sunrise,hour));
 }
-else if(hour < sunrise){
-color = mixColor(C_DAWN,C_SUNRISE, interp(dawn,sunrise,hour));
+else if(hour<noon){
+color=mixColor(C_SUNRISE,C_NOON,interp(sunrise,noon,hour));
 }
-else if(hour < noon){
-color = mixColor(C_SUNRISE,C_NOON, interp(sunrise,noon,hour));
+else if(hour<sunset){
+color=mixColor(C_NOON,C_SUNSET,interp(noon,sunset,hour));
 }
-else if(hour < sunset){
-color = mixColor(C_NOON,C_SUNSET, interp(noon,sunset,hour));
-}
-else if(hour < dusk){
-color = mixColor(C_SUNSET,C_DUSK, interp(sunset,dusk,hour));
+else if(hour<dusk){
+color=mixColor(C_SUNSET,C_DUSK,interp(sunset,dusk,hour));
 }
 else{
-color = mixColor(C_DUSK,C_NIGHT, (hour-dusk)/(24-dusk));
+color=mixColor(C_DUSK,C_NIGHT,(hour-dusk)/(24-dusk));
 }
 
 bar.style.background=color;
@@ -345,5 +331,4 @@ document.getElementById("city").innerText =
 }
 
 setInterval(update,1000);
-
 update();
