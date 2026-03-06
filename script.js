@@ -247,11 +247,8 @@ document.getElementById("dusk-text").innerText=`ANOCHECER ${safeTime(sun.dusk)}`
 
 let bar = document.getElementById("energy-fill");
 
-let sunriseParts = safeTime(sun.sunrise).split(":");
-let sunsetParts = safeTime(sun.sunset).split(":");
-
-let sunrise = Number(sunriseParts[0]) + Number(sunriseParts[1])/60;
-let sunset = Number(sunsetParts[0]) + Number(sunsetParts[1])/60;
+let sunrise = sun.sunrise.getHours() + sun.sunrise.getMinutes()/60;
+let sunset = sun.sunset.getHours() + sun.sunset.getMinutes()/60;
 
 let energy = 0;
 
