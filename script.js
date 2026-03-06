@@ -247,18 +247,18 @@ document.getElementById("dusk-text").innerText=`ANOCHECER ${safeTime(sun.dusk)}`
 
 let bar = document.getElementById("energy-fill");
 
-let sunrise = sun.sunrise.getHours() + sun.sunrise.getMinutes()/60;
-let sunset = sun.sunset.getHours() + sun.sunset.getMinutes()/60;
+let sunrise = sun.sunrise.getHours()+sun.sunrise.getMinutes()/60;
+let sunset = sun.sunset.getHours()+sun.sunset.getMinutes()/60;
 
-let energy = 0;
+let energy=0;
 
-if(hour >= sunrise && hour <= sunset){
-energy = (hour - sunrise) / (sunset - sunrise);
+if(hour>=sunrise && hour<=sunset){
+energy=(hour-sunrise)/(sunset-sunrise);
 }
 
-energy = Math.max(0, Math.min(1, energy));
+energy=Math.max(0,Math.min(1,energy));
 
-bar.style.width = (energy * 100) + "%";
+bar.style.width=(energy*100)+"%";
 
 // CLIMA
 
@@ -268,6 +268,11 @@ document.getElementById("temp").innerText =
 `TEMP ${w.temp.toFixed(2)} K | VIENTO ${w.wind} KM/H`;
 
 });
+
+// CIUDAD
+
+document.getElementById("city").innerText =
+`CIUDAD ${cityName}`;
 
 }
 
