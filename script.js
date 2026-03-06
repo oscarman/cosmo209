@@ -3,6 +3,9 @@ let longitude = -74.072;
 let timezone = "America/Bogota";
 let cityName = "Bogotá, Colombia";
 
+// FACTOR DE DILATACION DEL TIEMPO DEL MES 13
+const COSMOS_MONTH13_FACTOR = 86400 / (24*3600 + 20*60 + 30.945882352941);
+
 // UI
 
 const btn = document.getElementById("locationBtn");
@@ -167,7 +170,21 @@ return {temp:0,wind:0};
 
 function getTimeParts(){
 
-let date = new Date().toLocaleTimeString("en-GB",{
+let now = new Date();
+
+let start = new Date(now.getFullYear(),0,0);
+let dayOfYear = Math.floor((now-start)/86400000);
+
+let month = Math.floor((dayOfYear-1)/29)+1;
+
+let adjusted = now.getTime();
+
+// si estamos en mes 13 ralentizamos el tiempo
+if(month === 13){
+adjusted = start.getTime() + (now.getTime()-start.getTime()) * COSMOS_MONTH13_FACTOR;
+}
+
+let date = new Date(adjusted).toLocaleTimeString("en-GB",{
 timeZone: timezone,
 hour12:false
 });
